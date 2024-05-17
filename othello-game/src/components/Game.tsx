@@ -1,8 +1,7 @@
 // src/components/Game.tsx
 import React, { useState } from 'react';
 import Board from './Board';
-
-import "./Game.css";
+import './Game.css'; // 必要に応じてCSSファイルをインポート
 
 const Game: React.FC = () => {
     const initialSquares = () => {
@@ -17,9 +16,7 @@ const Game: React.FC = () => {
     const [squares, setSquares] = useState<(string | null)[]>(initialSquares());
     const [isNextBlack, setIsNextBlack] = useState(true);
 
-    const directions = [
-        -1, 1, -8, 8, -9, 9, -7, 7 // 左、右、上、下、左上、右下、右上、左下
-    ];
+    const directions = [-1, 1, -8, 8, -7, 7, -9, 9];
 
     const handleClick = (i: number) => {
         if (!isValidMove(i)) return;
@@ -30,43 +27,40 @@ const Game: React.FC = () => {
         setIsNextBlack(!isNextBlack);
     };
 
-
     const isValidMove = (i: number): boolean => {
         if (squares[i]) return false; // 既に石が置かれている場合は無効
 
         const currentPlayer = isNextBlack ? 'B' : 'W';
         const opponentPlayer = isNextBlack ? 'W' : 'B';
 
+        const row = Math.floor(i / 8);
+        const col = i % 8;
+
         for (let direction of directions) {
-            let x = i % 8;
-            let y = Math.floor(i / 8);
+            let x = col;
+            let y = row;
             let hasOpponentBetween = false;
 
             while (true) {
-                // 現在の位置を更新
                 x += direction % 8;
-                y += Math.floor(direction / 8);
+                y += Math.sign(direction) * Math.floor(Math.abs(direction) / 8);
 
-                // ボードの範囲外に出た場合はループを終了
+                // 行をまたぐ移動を防ぐチェック
                 if (x < 0 || x >= 8 || y < 0 || y >= 8) break;
+                if (direction === -1 && Math.floor((i - 1) / 8) !== row) break;
+                if (direction === 1 && Math.floor((i + 1) / 8) !== row) break;
 
-                // 次のインデックスを計算
                 const nextIndex = y * 8 + x;
 
                 // 次の位置に相手の石がある場合
                 if (squares[nextIndex] === opponentPlayer) {
                     hasOpponentBetween = true;
-                } 
-                // 次の位置に現在のプレイヤーの石がある場合
-                else if (squares[nextIndex] === currentPlayer) {
-                    // 相手の石が間にあった場合は有効な動きとする
+                } else if (squares[nextIndex] === currentPlayer) {
                     if (hasOpponentBetween) {
                         return true;
                     }
                     break;
-                } 
-                // 空のマスがある場合や範囲外の場合はループを終了
-                else {
+                } else {
                     break;
                 }
             }
@@ -79,36 +73,34 @@ const Game: React.FC = () => {
         const currentPlayer = isNextBlack ? 'B' : 'W';
         const opponentPlayer = isNextBlack ? 'W' : 'B';
 
+        const row = Math.floor(i / 8);
+        const col = i % 8;
+
         for (let direction of directions) {
-            let x = i % 8;
-            let y = Math.floor(i / 8);
+            let x = col;
+            let y = row;
             const stonesToFlip: number[] = [];
 
             while (true) {
-                // 現在の位置を更新
                 x += direction % 8;
-                y += Math.floor(direction / 8);
+                y += Math.sign(direction) * Math.floor(Math.abs(direction) / 8);
 
-                // ボードの範囲外に出た場合はループを終了
+                // 行をまたぐ移動を防ぐチェック
                 if (x < 0 || x >= 8 || y < 0 || y >= 8) break;
+                if (direction === -1 && Math.floor((i - 1) / 8) !== row) break;
+                if (direction === 1 && Math.floor((i + 1) / 8) !== row) break;
 
-                // 次のインデックスを計算
                 const nextIndex = y * 8 + x;
 
                 // 次の位置に相手の石がある場合、反転候補リストに追加
                 if (squares[nextIndex] === opponentPlayer) {
                     stonesToFlip.push(nextIndex);
-                }
-                // 次の位置に現在のプレイヤーの石がある場合
-                else if (squares[nextIndex] === currentPlayer) {
-                    // 間に相手の石がある場合、反転を実行
+                } else if (squares[nextIndex] === currentPlayer) {
                     for (const flipIndex of stonesToFlip) {
                         squares[flipIndex] = currentPlayer;
                     }
                     break;
-                }
-                // 空のマスがある場合や範囲外の場合はループを終了
-                else {
+                } else {
                     break;
                 }
             }
@@ -122,10 +114,10 @@ const Game: React.FC = () => {
 
     return (
         <div className="game">
-        <div className="game-board">
-            <Board squares={squares} onClick={handleClick} />
-        </div>
-        <button className="reset-button" onClick={resetGame}>リセット</button>
+            <div className="game-board">
+                <Board squares={squares} onClick={handleClick} />
+            </div>
+            <button className="reset-button" onClick={resetGame}>リセット</button>
         </div>
     );
 };
