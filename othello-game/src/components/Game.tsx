@@ -7,13 +7,23 @@ const Game: React.FC = () => {
   const [isNextBlack, setIsNextBlack] = useState(true);
 
   const handleClick = (i: number) => {
+    if (!isValidMove(i)) return;
     const squaresCopy = squares.slice();
-    if (squaresCopy[i]) return; // 既に石が置かれている場合は無視
     squaresCopy[i] = isNextBlack ? 'B' : 'W';
+    flipStones(i, squaresCopy);
     setSquares(squaresCopy);
     setIsNextBlack(!isNextBlack);
   };
+  
+  const isValidMove = (i: number): boolean => {
+    // 有効な動きかどうかを判断するロジックを追加
+    return !squares[i];     // 既に石が置かれている場合は無視
+  };
 
+  const flipStones = (i: number, squares: (string | null)[]): void => {
+    // 石を反転させるロジックを追加
+  };
+  
   return (
     <div className="game">
       <div className="game-board">
