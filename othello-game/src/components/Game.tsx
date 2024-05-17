@@ -114,6 +114,9 @@ const Game: React.FC = () => {
 
     return (
         <div className="game">
+            <div className="game-info">
+                <h2>次の手番: {isNextBlack ? '黒 (B)' : '白 (W)'}</h2>
+            </div>
             <div className="game-board">
                 <Board squares={squares} onClick={handleClick} />
             </div>
