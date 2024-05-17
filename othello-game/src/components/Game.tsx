@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import Board from './Board';
 
+import "./Game.css";
+
 const Game: React.FC = () => {
     const initialSquares = () => {
         const squares = Array(64).fill(null);
@@ -112,7 +114,7 @@ const Game: React.FC = () => {
             }
         }
     };
-    
+
     const resetGame = () => {
         setSquares(initialSquares());
         setIsNextBlack(true);

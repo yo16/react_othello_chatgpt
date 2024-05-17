@@ -1,6 +1,8 @@
 // src/components/Square.tsx
 import React from 'react';
 
+import './Square.css';
+
 interface SquareProps {
   value: string | null;
   onClick: () => void;
