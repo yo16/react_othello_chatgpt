@@ -35,28 +35,28 @@ const Game: React.FC = () => {
         if (squares[i]) return false; // 既に石が置かれている場合は無効
 
         const currentPlayer = isNextBlack ? 'B' : 'W';
-        const opponentPlayer  = isNextBlack ? 'W' : 'B';
+        const opponentPlayer = isNextBlack ? 'W' : 'B';
 
         for (let direction of directions) {
             let x = i % 8;
             let y = Math.floor(i / 8);
             let hasOpponentBetween = false;
-            
+
             while (true) {
                 // 現在の位置を更新
                 x += direction % 8;
                 y += Math.floor(direction / 8);
-                
+
                 // ボードの範囲外に出た場合はループを終了
                 if (x < 0 || x >= 8 || y < 0 || y >= 8) break;
-                
+
                 // 次のインデックスを計算
                 const nextIndex = y * 8 + x;
-            
+
                 // 次の位置に相手の石がある場合
                 if (squares[nextIndex] === opponentPlayer) {
                     hasOpponentBetween = true;
-                }
+                } 
                 // 次の位置に現在のプレイヤーの石がある場合
                 else if (squares[nextIndex] === currentPlayer) {
                     // 相手の石が間にあった場合は有効な動きとする
@@ -64,7 +64,7 @@ const Game: React.FC = () => {
                         return true;
                     }
                     break;
-                }
+                } 
                 // 空のマスがある場合や範囲外の場合はループを終了
                 else {
                     break;
