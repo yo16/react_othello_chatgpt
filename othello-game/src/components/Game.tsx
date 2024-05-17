@@ -16,7 +16,11 @@ const Game: React.FC = () => {
     const [squares, setSquares] = useState<(string | null)[]>(initialSquares());
     const [isNextBlack, setIsNextBlack] = useState(true);
 
-    const directions = [-1, 1, -8, 8, -7, 7, -9, 9];
+    const addValuesByDirection = [
+        {row:-1, col:-1}, {row:-1, col:0}, {row:-1, col:1}, 
+        {row: 0, col:-1},                  {row: 0, col:1}, 
+        {row: 1, col:-1}, {row: 1, col:0}, {row: 1, col:1}, 
+    ];
 
     const handleClick = (i: number) => {
         if (!isValidMove(i)) return;
@@ -33,22 +37,20 @@ const Game: React.FC = () => {
         const currentPlayer = isNextBlack ? 'B' : 'W';
         const opponentPlayer = isNextBlack ? 'W' : 'B';
 
-        const row = Math.floor(i / 8);
         const col = i % 8;
+        const row = Math.floor(i / 8);
 
-        for (let direction of directions) {
+        for (let addValue of addValuesByDirection) {
             let x = col;
             let y = row;
             let hasOpponentBetween = false;
 
             while (true) {
-                x += direction % 8;
-                y += Math.sign(direction) * Math.floor(Math.abs(direction) / 8);
+                x += addValue.col;
+                y += addValue.row;
 
                 // 行をまたぐ移動を防ぐチェック
                 if (x < 0 || x >= 8 || y < 0 || y >= 8) break;
-                if (direction === -1 && Math.floor((i - 1) / 8) !== row) break;
-                if (direction === 1 && Math.floor((i + 1) / 8) !== row) break;
 
                 const nextIndex = y * 8 + x;
 
@@ -76,19 +78,17 @@ const Game: React.FC = () => {
         const row = Math.floor(i / 8);
         const col = i % 8;
 
-        for (let direction of directions) {
+        for (let addValue of addValuesByDirection) {
             let x = col;
             let y = row;
             const stonesToFlip: number[] = [];
 
             while (true) {
-                x += direction % 8;
-                y += Math.sign(direction) * Math.floor(Math.abs(direction) / 8);
+                x += addValue.col;
+                y += addValue.row;
 
                 // 行をまたぐ移動を防ぐチェック
                 if (x < 0 || x >= 8 || y < 0 || y >= 8) break;
-                if (direction === -1 && Math.floor((i - 1) / 8) !== row) break;
-                if (direction === 1 && Math.floor((i + 1) / 8) !== row) break;
 
                 const nextIndex = y * 8 + x;
 
